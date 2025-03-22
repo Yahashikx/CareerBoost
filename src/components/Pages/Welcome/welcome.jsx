@@ -178,12 +178,12 @@ const Welcome = () => {
               нашей удобной системы.
             </p>
           </div>
-          <div>
+          <Link to={'/registration-employer'}>
             <button className="p-3 rounded-[7px] bg-gray-300 text-[#0851A3] flex flex-wrap gap-3">
               Зарегестрироваться
               <img src={Arrow} alt="" />
             </button>
-          </div>
+          </Link>
         </div>
       </div>
       <Footer />

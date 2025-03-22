@@ -13,6 +13,7 @@ import Profile from "./components/Pages/Profile/profile";
 import AboutUs from "./components/Pages/AboutUs/about-us";
 import RegistrationVacancies from "./components/Pages/Registration-Vacancies/registration-vacancies";
 import RegistrationInternship from "./components/Pages/Registration-Internship/registration-internship";
+import RegistrationEmployer from "./components/Pages/Registration-Employer/registration-employer";
 
 function App() {
   return (
@@ -31,6 +32,7 @@ function App() {
           <Route path="/profile" element={<Profile />} />
           <Route path="/events" element={<Events />} />
           <Route path="/registration" element={<Registration />} />
+          <Route path="/registration-employer" element={<RegistrationEmployer />} />
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Welcome />} />
           <Route path="/vacancies" element={<Companies />} />
