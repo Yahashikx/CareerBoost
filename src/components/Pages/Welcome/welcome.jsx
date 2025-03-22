@@ -9,8 +9,8 @@ import Search from "../../../assets/img/search.svg";
 import Apply from "../../../assets/img/apply.svg";
 import Arrow from "../../../assets/img/arrow.svg"
 import Footer from "../Footer/footer";
-import CompaniesCard from "../../Pages/Companies-Card/companies-card"; // Import CompaniesCard
-import { useCompanies } from "../../store/companies-slice/companies-slice"; // Zustand store
+import CompaniesCard from "../../Pages/Companies-Card/companies-card";
+import { useCompanies } from "../../store/companies-slice/companies-slice";
 
 const Welcome = () => {
   const [currentPage, setCurrentPage] = useState(1);
