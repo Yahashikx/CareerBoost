@@ -28,7 +28,6 @@ export const useAuth = create((set) => ({
       const user = userCredential.user;
       const userDoc = doc(userCollectionRef, user.uid);
       await setDoc(userDoc, {
-        companyName: companyData.companyName,
         description: companyData.description,
         experience: companyData.experience,
         images: companyData.images,

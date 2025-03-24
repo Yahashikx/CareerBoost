@@ -11,7 +11,7 @@ import ArrowIcon from "../../../assets/img/arrow.svg";
 import L from "leaflet";
 import "leaflet/dist/leaflet.css";
 
-function CompanieDetails() {
+const CompanieDetails = () =>  {
   const { id } = useParams();
   const { companie, getAllCompanies, addToWork, isFetch } = useCompanies();
   const [modalMenu, setModalMenu] = useState(false);

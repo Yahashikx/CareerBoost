@@ -5,7 +5,7 @@ import { motion } from "framer-motion";
 import Header from "../Header/header";
 
 const RegistrationCompany = () => {
-  const [CompanyName, setCompanyName] = useState("");
+  const [Name, setName] = useState("");
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
   const [RepeatPassword, setRepeatPassword] = useState("");
@@ -15,21 +15,23 @@ const RegistrationCompany = () => {
   const [Experience, setExperience] = useState("");
   const [Images, setImages] = useState([]);
   const [Location, setLocation] = useState("");
-  const [Name, setName] = useState("");
   const [Profession, setProfession] = useState("");
   const [Salary, setSalary] = useState("");
   const [Time, setTime] = useState("");
 
   const { registerUser, isFetch, error } = useAuth();
   const navigate = useNavigate();
+
   const handleResponsibilityChange = (index, value) => {
     const updatedResponsibilities = [...Responsibilities];
     updatedResponsibilities[index] = value;
     setResponsibilities(updatedResponsibilities);
   };
+
   const addResponsibilityInput = () => {
     setResponsibilities([...Responsibilities, ""]);
   };
+
   const Register = async () => {
     if (Password !== RepeatPassword) {
       setPasswordError("Пароли не совпадают");
@@ -39,12 +41,11 @@ const RegistrationCompany = () => {
 
     try {
       const companyData = {
-        companyName: CompanyName,
+        name: Name,
         description: Description,
         experience: Experience,
         images: Images,
         location: Location,
-        name: Name,
         profession: Profession,
         responsibilities: Responsibilities.filter((item) => item.trim() !== ""),
         salary: Salary,
@@ -70,7 +71,7 @@ const RegistrationCompany = () => {
             transition={{ duration: 0.8 }}
           >
             <h1 className="text-3xl font-semibold text-gray-800">
-              Создать аккаунт компании
+              Создать Стажировку
             </h1>
             <p className="text-sm text-gray-600 mt-2">
               Уже есть аккаунт?{" "}
@@ -79,7 +80,6 @@ const RegistrationCompany = () => {
               </Link>
             </p>
           </motion.div>
-
           <motion.div
             className="space-y-4"
             initial={{ opacity: 0 }}
@@ -87,11 +87,11 @@ const RegistrationCompany = () => {
             transition={{ duration: 1, delay: 0.3 }}
           >
             <div>
-              <label className="text-gray-700">Название компании</label>
+              <label className="text-gray-700">Название стажировки</label>
               <motion.input
                 placeholder="Введите название вашей компании"
-                value={CompanyName}
-                onChange={(e) => setCompanyName(e.target.value)}
+                value={Name}
+                onChange={(e) => setName(e.target.value)}
                 className="w-full p-3 mt-1 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4e73df] focus:border-[#4e73df] transition duration-200"
                 type="text"
               />
@@ -210,6 +210,14 @@ const RegistrationCompany = () => {
                 onChange={(e) => setTime(e.target.value)}
                 className="w-full p-3 mt-1 border-2 border-gray-300 rounded-lg"
                 placeholder="Время"
+              />
+            </div>
+            <div>
+              <label className="text-gray-700">Логотип компании</label>
+              <input
+                type="file"
+                onChange={(e) => setImages(e.target.files)}
+                className="w-full p-3 mt-1 border-2 border-gray-300 rounded-lg"
               />
             </div>
             <motion.button

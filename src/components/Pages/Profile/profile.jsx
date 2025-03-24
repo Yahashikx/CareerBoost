@@ -3,6 +3,7 @@ import { useCompanies } from "../../store/companies-slice/companies-slice";
 import { useAuth } from "../../store/auth-slice/auth-slice"; // Импортируем useAuth для обновления аватара
 import Header from "../Header/header";
 import User from "../../../assets/img/user.svg";
+import { Link } from "react-router-dom";
 
 function Profile() {
   const { work, getWork } = useCompanies();
@@ -47,10 +48,10 @@ function Profile() {
             className="text-white p-[10px] bg-blue-400 rounded-[12px]"
           />
         </div>
-        <div className="mt-[2%] ml-[5%] flex justify-center items-center gap-x-[10px] gap-y-[50px]">
+        <div className="mt-[2%] ml-[5%] grid grid-cols-3 gap-x-[10px] gap-y-[50px]">
           {work && work.length > 0 ? (
             work.map((item, index) => (
-              <div
+              <Link to={`/companie-details/${item.id}`}
                 key={index}
                 className="border-blue-400 border-[3px] w-[80%] p-4 rounded-[15px] shadow-md"
               >
@@ -61,22 +62,29 @@ function Profile() {
                 />
                 <p className="text-lg font-bold">{item.name}</p>
                 <p>{item.profession}</p>
-              </div>
+              </Link>
             ))
           ) : (
-            <div className="grid grid-cols-1 text-center  p-4">
+            <>
+            <div></div>
+            <div className="grid grid-cols-1 gap-y-3 text-center  p-4">
               <div>
                 <p className="text-xl text-gray-600">
                   У вас пока нет сохранённых компаний!
                 </p>
               </div>
               <div>
-                <p className="text-sm text-gray-400 mt-2">
+                <p className="text-[19px] text-gray-400 mt-2">
                   Добавьте компанию, чтобы начать следить за обновлениями и
                   получать уведомления.
                 </p>
               </div>
+              <Link to={'/vacancies'}>
+                <button className="bg-blue-400 p-3 rounded-[9px] text-white">Поискать Работы</button>
+              </Link>
             </div>
+            <div></div>
+            </>
           )}
         </div>
       </div>

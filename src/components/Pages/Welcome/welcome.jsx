@@ -6,6 +6,8 @@ import Human from "../../../assets/img/human.svg";
 import Create from "../../../assets/img/create.svg";
 import Upload from "../../../assets/img/upload.svg";
 import Search from "../../../assets/img/search.svg";
+import SearchCompanie from "../../../assets/img/search-companie.svg";
+import Location from "../../../assets/img/location.svg";
 import Apply from "../../../assets/img/apply.svg";
 import Arrow from "../../../assets/img/arrow.svg"
 import Footer from "../Footer/footer";
@@ -49,9 +51,22 @@ const Welcome = () => {
             Aliquam vitae turpis in diam convallis finibus in at risus. Nullam
             in scelerisque leo, eget sollicitudin velit vestibulum.
           </p>
+          <div className="mt-[2%] flex flex-wrap justify-center gap-11 py-3 shadow-2xl w-[50%]">
+            <div className="flex justify-center items-center">
+              <img src={SearchCompanie} alt="" />
+              <input className="py-3 px-1" type="text" placeholder="Название" />
+            </div>
+            <div className="flex justify-center items-center">
+            <img src={Location} alt="" />
+              <input className="py-3 px-1" type="text" placeholder="Местоположение" />
+            </div>
+            <div className="flex justify-center items-center">
+              <button className="bg-blue-700 py-3 px-[60%] rounded-[4px] text-white">Поиск</button>
+            </div>
+          </div>
         </motion.div>
         <motion.div
-          className="relative left-[990px] w-[30%]"
+          className="relative left-[990px] bottom-[200px] w-[30%]"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1 }}

@@ -60,7 +60,7 @@ const Header = () => {
       <div className="block md:hidden ml-auto">
         <img src={BurgerMenu} alt="" />
       </div>
-      <div className={`ml-[20%] md:flex items-center gap-[30px] hidden`}>
+      <div className={`ml-[22%] md:flex items-center gap-[30px] hidden`}>
         <Link to={"/vacancies"}>
           <motion.p whileHover={{ scale: 1.1 }}>Вакансии</motion.p>
         </Link>

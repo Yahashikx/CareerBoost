@@ -5,7 +5,6 @@ import { motion } from "framer-motion";
 import Header from "../Header/header";
 
 const RegistrationCompany = () => {
-  const [CompanyName, setCompanyName] = useState("");
   const [Email, setEmail] = useState("");
   const [Password, setPassword] = useState("");
   const [RepeatPassword, setRepeatPassword] = useState("");
@@ -13,7 +12,7 @@ const RegistrationCompany = () => {
   const [Responsibilities, setResponsibilities] = useState([""]);
   const [Description, setDescription] = useState("");
   const [Experience, setExperience] = useState("");
-  const [Images, setImages] = useState([]);
+  const [Images, setImages] = useState(null);
   const [Location, setLocation] = useState("");
   const [Name, setName] = useState("");
   const [Profession, setProfession] = useState("");
@@ -22,14 +21,24 @@ const RegistrationCompany = () => {
 
   const { registerUser, isFetch, error } = useAuth();
   const navigate = useNavigate();
+
   const handleResponsibilityChange = (index, value) => {
     const updatedResponsibilities = [...Responsibilities];
     updatedResponsibilities[index] = value;
     setResponsibilities(updatedResponsibilities);
   };
+
   const addResponsibilityInput = () => {
     setResponsibilities([...Responsibilities, ""]);
   };
+
+  const handleImageChange = (e) => {
+    const file = e.target.files[0];
+    if (file) {
+      setImages(file);
+    }
+  };
+
   const Register = async () => {
     if (Password !== RepeatPassword) {
       setPasswordError("Пароли не совпадают");
@@ -39,10 +48,9 @@ const RegistrationCompany = () => {
 
     try {
       const companyData = {
-        companyName: CompanyName,
+        companyName: Name,
         description: Description,
         experience: Experience,
-        images: Images,
         location: Location,
         name: Name,
         profession: Profession,
@@ -50,8 +58,15 @@ const RegistrationCompany = () => {
         salary: Salary,
         time: Time,
       };
+      const formData = new FormData();
+      formData.append("email", Email);
+      formData.append("password", Password);
+      formData.append("companyData", JSON.stringify(companyData));
+      if (Images) {
+        formData.append("image", Images);
+      }
 
-      await registerUser(Email, Password, companyData);
+      await registerUser(formData);
       navigate("/");
     } catch (err) {
       console.error("Ошибка регистрации:", err);
@@ -70,7 +85,7 @@ const RegistrationCompany = () => {
             transition={{ duration: 0.8 }}
           >
             <h1 className="text-3xl font-semibold text-gray-800">
-              Создать аккаунт компании
+              Создать Вакансию
             </h1>
             <p className="text-sm text-gray-600 mt-2">
               Уже есть аккаунт?{" "}
@@ -87,11 +102,11 @@ const RegistrationCompany = () => {
             transition={{ duration: 1, delay: 0.3 }}
           >
             <div>
-              <label className="text-gray-700">Название компании</label>
+              <label className="text-gray-700">Название Вакансии</label>
               <motion.input
                 placeholder="Введите название вашей компании"
-                value={CompanyName}
-                onChange={(e) => setCompanyName(e.target.value)}
+                value={Name}
+                onChange={(e) => setName(e.target.value)}
                 className="w-full p-3 mt-1 border-2 border-gray-300 rounded-lg focus:outline-none focus:ring-2 focus:ring-[#4e73df] focus:border-[#4e73df] transition duration-200"
                 type="text"
               />
@@ -212,6 +227,15 @@ const RegistrationCompany = () => {
                 placeholder="Время"
               />
             </div>
+            <div>
+              <label className="text-gray-700">Логотип компании</label>
+              <input
+                type="file"
+                onChange={handleImageChange}
+                className="w-full p-3 mt-1 border-2 border-gray-300 rounded-lg"
+              />
+            </div>
+
             <motion.button
               className="w-full bg-[#4e73df] text-white p-3 rounded-lg mt-4 hover:bg-[#365b8c] focus:outline-none focus:ring-2 focus:ring-[#2c5c8e] active:scale-95 transition duration-200"
               type="button"
