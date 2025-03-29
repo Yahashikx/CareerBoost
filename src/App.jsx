@@ -10,7 +10,6 @@ import InternshipDetails from "./components/Pages/Internship-Details/internship-
 import Events from "./components/Pages/Events-Page/event";
 import EventDetails from "./components/Pages/Event-Details/event-details";
 import Profile from "./components/Pages/Profile/profile";
-import AboutUs from "./components/Pages/AboutUs/about-us";
 import RegistrationVacancies from "./components/Pages/Registration-Vacancies/registration-vacancies";
 import RegistrationInternship from "./components/Pages/Registration-Internship/registration-internship";
 import RegistrationEmployer from "./components/Pages/Registration-Employer/registration-employer";
@@ -30,7 +29,6 @@ function App() {
             path="/registration-vacancies"
             element={<RegistrationVacancies />}
           />
-          <Route path="/about-us" element={<AboutUs />} />
           <Route path="/profile" element={<Profile />} />
           <Route path="/events" element={<Events />} />
           <Route path="/registration" element={<Registration />} />
