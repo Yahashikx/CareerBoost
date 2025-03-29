@@ -2,7 +2,11 @@ import { useEvents } from "../../store/events-slice/events-slice";
 import { useEffect, useState } from "react";
 import { useParams } from "react-router-dom";
 import Header from "../Header/header";
+import { Spin, Space } from 'antd';
+import { motion } from "motion/react";
+import { LoadingOutlined } from '@ant-design/icons';
 
+const loadingIcon = <LoadingOutlined style={{ fontSize: 124 }} spin />;
 const EventDetails = () => {
   const { events, getAllEvents, error, isFetch, addParticipant } = useEvents();
   const { id } = useParams();
@@ -56,8 +60,19 @@ const EventDetails = () => {
     return <div className="text-center text-red-500">{error}</div>;
   }
 
-  if (!event) {
-    return <p>Event details not found.</p>;
+if (!event) {
+    return (
+      <motion.div
+        className="flex justify-center items-center h-[100vh]"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <Space size="large">
+          <Spin indicator={loadingIcon} />
+        </Space>
+      </motion.div>
+    );
   }
 
   return (

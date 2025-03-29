@@ -1,14 +1,7 @@
 import { create } from "zustand";
-import {
-  createUserWithEmailAndPassword,
-  signInWithEmailAndPassword,
-  signOut,
-  signInWithPopup,
-  GoogleAuthProvider,
-  FacebookAuthProvider,
-} from "firebase/auth";
+import { createUserWithEmailAndPassword, signInWithPopup, GoogleAuthProvider, FacebookAuthProvider, signOut, signInWithEmailAndPassword } from "firebase/auth";
 import { auth, db } from "../../utils/firebase/firebase-config";
-import { collection, doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
+import { collection, doc, setDoc, getDoc } from "firebase/firestore";
 
 export const userCollectionRef = collection(db, "users");
 
@@ -16,22 +9,23 @@ export const useAuth = create((set) => ({
   isFetch: false,
   error: null,
   user: null,
+  isEmployer: false,
   setUser: (user) => {
     set({ user });
   },
+
   async loginGoogle() {
     set({ isFetch: true, error: null });
     try {
       const provider = new GoogleAuthProvider();
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-      const userData = { id: user.uid };
       const userDoc = doc(userCollectionRef, user.uid);
       const userSnapshot = await getDoc(userDoc);
       if (!userSnapshot.exists()) {
-        await setDoc(userDoc, { isAdmin: false, work: [], avatar: "" });
+        await setDoc(userDoc, { isAdmin: false, isEmployer: false, work: [], avatar: "" });
       }
-
+      const userData = { ...userSnapshot.data(), id: user.uid };
       set({ user: userData });
       return userData;
     } catch (error) {
@@ -41,19 +35,19 @@ export const useAuth = create((set) => ({
       set({ isFetch: false });
     }
   },
+
   async loginFacebook() {
     set({ isFetch: true, error: null });
     try {
       const provider = new FacebookAuthProvider();
       const result = await signInWithPopup(auth, provider);
       const user = result.user;
-      const userData = { id: user.uid };
       const userDoc = doc(userCollectionRef, user.uid);
       const userSnapshot = await getDoc(userDoc);
       if (!userSnapshot.exists()) {
-        await setDoc(userDoc, { isAdmin: false, work: [], avatar: "" });
+        await setDoc(userDoc, { isAdmin: false, isEmployer: false, work: [], avatar: "" });
       }
-
+      const userData = { ...userSnapshot.data(), id: user.uid };
       set({ user: userData });
       return userData;
     } catch (error) {
@@ -63,18 +57,27 @@ export const useAuth = create((set) => ({
       set({ isFetch: false });
     }
   },
-
+    async checkIfEmployer() {
+      try {
+        const userId = auth.currentUser?.uid;
+        if (!userId) {
+          console.error('Не зарегестрирован');
+          return;
+        }
+        const userRef = doc(db, "users", userId);
+        const userSnap = await getDoc(userRef);
+        set({ isEmployer: userSnap.data()?.isEmployer || false });
+      } catch (error) {
+        console.error('Error fetching user employer status', error);
+      }
+    },
   async registerUser(email, password) {
     set({ isFetch: true, error: null });
     try {
-      const userCredential = await createUserWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      const userCredential = await createUserWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
       const userDoc = doc(userCollectionRef, user.uid);
-      await setDoc(userDoc, { isAdmin: false, work: [], avatar: "" });
+      await setDoc(userDoc, { isAdmin: false, isEmployer: false, work: [], avatar: "" });
       const userData = { id: user.uid };
       set({ user: userData });
       return userData;
@@ -89,13 +92,11 @@ export const useAuth = create((set) => ({
   async loginUser(email, password) {
     set({ isFetch: true, error: null });
     try {
-      const userCredential = await signInWithEmailAndPassword(
-        auth,
-        email,
-        password
-      );
+      const userCredential = await signInWithEmailAndPassword(auth, email, password);
       const user = userCredential.user;
-      const userData = { id: user.uid };
+      const userDoc = doc(userCollectionRef, user.uid);
+      const userSnapshot = await getDoc(userDoc);
+      const userData = { ...userSnapshot.data(), id: user.uid };
       set({ user: userData });
     } catch (error) {
       console.error(error);
@@ -110,21 +111,8 @@ export const useAuth = create((set) => ({
       await signOut(auth);
       set({ user: null });
     } catch (error) {
-      console.error("Error logging out", error);
+      console.error(error);
+      set({ error: "Ошибка при выходе" });
     }
-  },
-  async updateAvatar(newAvatar) {
-    const user = auth.currentUser;
-    if (user) {
-      try {
-        const userDoc = doc(userCollectionRef, user.uid);
-        await updateDoc(userDoc, { avatar: newAvatar });
-        set({ user: { ...this.user, avatar: newAvatar } });
-        localStorage.setItem("avatar", newAvatar);
-      } catch (error) {
-        console.error("Ошибка при обновлении аватара:", error);
-        set({ error: "Ошибка при обновлении аватара" });
-      }
-    }
-  },
+  }
 }));

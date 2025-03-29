@@ -13,15 +13,15 @@ import "leaflet/dist/leaflet.css";
 
 function InternshipDetails() {
   const { id } = useParams();
-  const { internship, getAllInternship, addToWork, isFetch } = useInternship();
+  const { intern, getAllInternship, addToWork, isFetch } = useInternship();
   const [modalMenu, setModalMenu] = useState(false);
   const [coordinates, setCoordinates] = useState([51.505, -0.09]);
-  const [map, setMap] = useState(null);
-  const interny = internship.find((internship) => internship.id === id);
+  const [isMapModalOpen, setIsMapModalOpen] = useState(false);
+  const interny = intern.find((internship) => internship.id === id);
 
   useEffect(() => {
-    if (!isFetch && internship.length === 0) getAllInternship();
-  }, [isFetch, getAllInternship, internship.length]);
+    if (!isFetch && intern.length === 0) getAllInternship();
+  }, [isFetch, getAllInternship, intern.length]);
 
   useEffect(() => {
     if (interny?.location) {
@@ -30,30 +30,18 @@ function InternshipDetails() {
   }, [interny]);
 
   useEffect(() => {
-    const initialMap = L.map("map").setView(coordinates, 13);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
-      initialMap
-    );
-    setMap(initialMap);
+    if (isMapModalOpen && interny && coordinates.length > 0) {
+      const initialMap = L.map("map").setView(coordinates, 13);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
+        initialMap
+      );
 
-    return () => initialMap.remove();
-  }, []);
-
-  useEffect(() => {
-    if (map && coordinates.length > 0) {
-      map.eachLayer((layer) => {
-        if (layer instanceof L.Marker) map.removeLayer(layer);
-      });
-      map.setView(coordinates, 13);
-      const marker = L.marker(coordinates).addTo(map);
+      const marker = L.marker(coordinates).addTo(initialMap);
       marker.bindPopup(`${interny.name}<br />${interny.location}`).openPopup();
+
+      return () => initialMap.remove();
     }
-  }, [coordinates, interny, map]);
-
-  if (isFetch) return <h1>Загрузка...</h1>;
-  if (!interny) return <h1>Компания не найдена</h1>;
-
-  const onHandleRepost = () => interny && addToWork(interny);
+  }, [isMapModalOpen, interny, coordinates]);
 
   const getCoordinatesByAddress = async (address) => {
     const url = `https://nominatim.openstreetmap.org/search?format=json&q=${address}`;
@@ -68,6 +56,7 @@ function InternshipDetails() {
     return [51.505, -0.09];
   };
 
+  const onHandleRepost = () => interny && addToWork(interny);
   return (
     <>
       <Header />
@@ -95,7 +84,7 @@ function InternshipDetails() {
             {interny.time}
           </p>
         </div>
-        <div className="flex items-center ml-[500px] gap-[10px]">
+        <div className="flex items-center ml-[250px] gap-[10px]">
           <button
             onClick={onHandleRepost}
             className="bg-blue-100 p-[10px] rounded-[6px]"
@@ -113,13 +102,15 @@ function InternshipDetails() {
             Подать заявку
             <img src={ArrowIcon} alt="Arrow" />
           </button>
+          <button
+            onClick={() => setIsMapModalOpen(true)}
+            className="bg-green-600 text-white py-[8px] px-[40px] flex flex-wrap gap-[10px]"
+          >
+            Узнать местоположение
+            <img src={ArrowIcon} alt="Arrow" />
+          </button>
         </div>
       </div>
-      <div
-        className="mt-5"
-        id="map"
-        style={{ height: "300px", width: "100%" }}
-      ></div>
       <div className="border-blue-400 border-[1px] w-[400px] h-[270px] absolute left-[990px]">
         <div className="mt-[20px] ml-[20px]">
           <p className="text-[18px]">Обзор вакансии</p>
@@ -203,6 +194,22 @@ function InternshipDetails() {
           </div>
         </div>
       )}
+      {isMapModalOpen && (
+        <div className="fixed inset-0 bg-black opacity-70 z-10"></div>
+      )}
+
+      {isMapModalOpen && (
+        <div className="fixed left-[30%] top-[30%] w-[40%] h-[51%] rounded-[9px] px-[20px] bg-white shadow-md z-20 opacity-90 modal">
+          <button
+            onClick={() => setIsMapModalOpen(false)} // Close map modal
+            className="fixed top-[5%] right-[5%] rounded-full py-[10px] px-[10px] bg-blue-100"
+          >
+            <img src={CloseIcon} alt="Close" />
+          </button>
+          <div id="map" style={{ height: "100%", width: "100%" }}></div>
+        </div>
+      )}
+
     </>
   );
 }

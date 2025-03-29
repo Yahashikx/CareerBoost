@@ -3,8 +3,8 @@ import Registration from "./components/Pages/Registration/registration";
 import Login from "./components/Pages/Login/login";
 import { BrowserRouter, Routes, Route } from "react-router-dom";
 import Welcome from "./components/Pages/Welcome/welcome";
-import Companies from "./components/Pages/Companies/companies";
-import CompanieDetails from "./components/Pages/Companie-Details/companie-details";
+import Vacancies from "./components/Pages/Vacancies/vacancies";
+import VacancieDetails from "./components/Pages/Vacancie-Details/vacancie-details";
 import Internship from "./components/Pages/Internship/internship";
 import InternshipDetails from "./components/Pages/Internship-Details/internship-details";
 import Events from "./components/Pages/Events-Page/event";
@@ -14,12 +14,14 @@ import AboutUs from "./components/Pages/AboutUs/about-us";
 import RegistrationVacancies from "./components/Pages/Registration-Vacancies/registration-vacancies";
 import RegistrationInternship from "./components/Pages/Registration-Internship/registration-internship";
 import RegistrationEmployer from "./components/Pages/Registration-Employer/registration-employer";
+import AdminPanel from "./components/Pages/Admin/admin";
 
 function App() {
   return (
     <>
       <BrowserRouter>
         <Routes>
+          <Route path="admin-panel" element={<AdminPanel/>}/>
           <Route
             path="/registration-internship"
             element={<RegistrationInternship />}
@@ -35,9 +37,9 @@ function App() {
           <Route path="/registration-employer" element={<RegistrationEmployer />} />
           <Route path="/login" element={<Login />} />
           <Route path="/" element={<Welcome />} />
-          <Route path="/vacancies" element={<Companies />} />
+          <Route path="/vacancies" element={<Vacancies />} />
           <Route path="/internship" element={<Internship />} />
-          <Route path="/companie-details/:id" element={<CompanieDetails />} />
+          <Route path="/vacancie-details/:id" element={<VacancieDetails />} />
           <Route
             path="/internship-details/:id"
             element={<InternshipDetails />}

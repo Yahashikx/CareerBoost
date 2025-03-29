@@ -1,13 +1,16 @@
 import { useEffect, useState } from "react";
 import Header from "../Header/header";
 import { useCompanies } from "../../store/companies-slice/companies-slice";
-import CompaniesCard from "../Companies-Card/companies-card";
+import VacanciesCard from "../Vacancies-Card/vacancies-card";
 import { motion } from "framer-motion";
 import Search from "../../../assets/img/search-companie.svg";
 import Location from "../../../assets/img/location.svg";
 import Profession from "../../../assets/img/profession.svg";
 import { Link } from "react-router-dom";
+import { Spin, Space } from "antd";
+import { LoadingOutlined } from '@ant-design/icons';
 
+const loadingIcon = <LoadingOutlined style={{ fontSize: 124 }} spin />;
 export const Main = () => {
   const [nameCompanie, setNameCompanie] = useState("");
   const [location, setLocation] = useState("");
@@ -18,7 +21,6 @@ export const Main = () => {
   const [buttonSearch, setButtonSearch] = useState("");
   const [buttonLocation, setButtonLocation] = useState("");
   const [buttonTime, setButtonTime] = useState("");
-  const [buttonProfession, setButtonProfession] = useState("");
   const { getAllCompanies, isFetch, companie, error } = useCompanies();
   const [modalMenu, setModalMenu] = useState(false);
   const [cardContainer, setCardContainer] = useState("square");
@@ -43,9 +45,9 @@ export const Main = () => {
     const searchTime = company.time
       .toLowerCase()
       .includes(buttonTime.toLocaleLowerCase());
-    const searchProfession = company.profession
-      .toLowerCase()
-      .includes(buttonProfession.toLocaleLowerCase());
+    const searchProfession = profession
+      ? company.profession.toLowerCase() === profession.toLowerCase()
+      : true;
     let searchSalary = true;
     if (filterSalary) {
       const companySalary = parseInt(company.salary);
@@ -86,7 +88,6 @@ export const Main = () => {
     setButtonSearch(nameCompanie);
     setButtonLocation(location);
     setButtonTime(time);
-    setButtonProfession(profession);
     setFilterSalary(salaryRange);
     setFilterExperience(experience);
   };
@@ -103,6 +104,22 @@ export const Main = () => {
   );
 
   const paginate = (pageNumber) => setCurrentPage(pageNumber);
+  const professions = [
+    ...new Set(companie.map((company) => company.profession)),
+  ];
+  const [currentIndex, setCurrentIndex] = useState(0);
+  const professionsToShow = professions.slice(currentIndex, currentIndex + 5);
+  const handleNext = () => {
+    if (currentIndex + 5 < professions.length) {
+      setCurrentIndex(currentIndex + 5);
+    }
+  };
+
+  const handlePrev = () => {
+    if (currentIndex - 5 >= 0) {
+      setCurrentIndex(currentIndex - 5);
+    }
+  };
 
   if (isFetch) {
     return (
@@ -119,9 +136,16 @@ export const Main = () => {
 
   if (error) {
     return (
-      <h1 className="text-center text-xl font-semibold mt-10 text-red-500">
-        Failed to load companies. Please try again later.
-      </h1>
+      <motion.div
+        className="flex justify-center items-center h-[100vh]"
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 1 }}
+        transition={{ duration: 0.5 }}
+      >
+        <Space size="large">
+          <Spin indicator={loadingIcon} />
+        </Space>
+      </motion.div>
     );
   }
 
@@ -160,30 +184,9 @@ export const Main = () => {
           </div>
           <div
             className="flex flex-wrap items-center gap-[10px]"
-            onChange={(e) => setProfession(e.target.value)}
-            value={profession}
-          >
-            <img src={Profession} alt="" />
-            <select className="py-[10px]">
-              <option value="">Все профессии</option>
-              <option value="Front End Developer">Front End Developer</option>
-              <option value="Junior Graphic Designer">
-                Junior Graphic Designer
-              </option>
-              <option value="Senior UX Designer">Senior UX Designer</option>
-              <option value="Technical Support Specialist">
-                Technical Support Specialist
-              </option>
-              <option value="Interaction Designer">Interaction Designer</option>
-              <option value="Product Designer">Product Designer</option>
-              <option value="UI/UX Designer">UI/UX Designer</option>
-              <option value="Networking Engineer">Networking Engineer</option>
-            </select>
-          </div>
-          <div
-            className="flex flex-wrap items-center gap-[10px]"
             onClick={() => setModalMenu(!modalMenu)}
           >
+            <img src={Profession} alt="" />
             Расширенный фильтр
           </div>
           <div className="flex items-center">
@@ -338,7 +341,49 @@ export const Main = () => {
           </div>
         </div>
       )}
-
+      <div className="flex justify-center items-center mt-6 gap-4">
+        {professions.length >= 1 && (
+          <>
+            <div className="flex justify-between mt-2 gap-5">
+              <button
+                onClick={handlePrev}
+                disabled={currentIndex === 0}
+                className="bg-black text-white px-3 py-1 rounded-[15px]"
+              >
+                Назад
+              </button>
+              <div className=" px-4 py-2 rounded">
+                <div className=" max-h-[60px] w-auto grid grid-cols-5 gap-3">
+                  {professionsToShow.map((prof, index) => (
+                    <p
+                      key={index}
+                      onClick={() => setProfession(prof)}
+                      className="p-2 bg-gray-500 flex justify-center text-white hover:bg-blue-600 rounded"
+                    >
+                      {prof}
+                    </p>
+                  ))}
+                </div>
+              </div>
+              <button
+                onClick={handleNext}
+                disabled={currentIndex + 5 >= professions.length}
+                className="bg-black text-white px-3 py-1 rounded-[15px]"
+              >
+                Вперед
+              </button>
+              <div className="flex justify-center items-center">
+                <button
+                  className=" bg-blue-950 px-3 py-3 text-white rounded-[15px]"
+                  onClick={() => setProfession()}
+                >
+                  Сбросить
+                </button>
+              </div>
+            </div>
+          </>
+        )}
+      </div>
       <Link
         to={"/registration-vacancies"}
         className="flex justify-center items-center mt-[1%]"
@@ -368,7 +413,7 @@ export const Main = () => {
               exit={{ opacity: 0, scale: 0.8 }}
               transition={{ duration: 0.2, delay: index * 0.1 }}
             >
-              <CompaniesCard companies={item} />
+              <VacanciesCard companies={item} />
             </motion.div>
           ))}
         </motion.div>

@@ -9,8 +9,10 @@ import { useEffect, useState } from "react";
 import Exit from "../../../assets/img/exit.svg";
 import Login from "../../../assets/img/login.svg";
 import BurgerMenu from "../../../assets/img/burger-menu.svg";
+import Arrow from "../../../assets/img/arrow.svg";
 
 const Header = () => {
+  const [modalMenu, setModalMenu] = useState(false);
   const { user, isFetch } = useAuth();
   const avatar = user?.avatar || localStorage.getItem("avatar") || User;
   const [setUser] = useState(null);
@@ -31,9 +33,16 @@ const Header = () => {
       console.error("Error logging out", error);
     }
   };
+
+  const toggleModal = () => {
+    setModalMenu(!modalMenu);
+  };
+
+  const isAdmin = user?.isAdmin;
+
   return (
     <motion.div
-      className="flex flex-wrap h-[60px] p-4"
+      className="flex flex-wrap h-[60px] p-4 z-20 opacity-90"
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
       transition={{ duration: 1 }}
@@ -57,10 +66,63 @@ const Header = () => {
           </motion.p>
         </Link>
       </div>
-      <div className="block md:hidden ml-auto">
-        <img src={BurgerMenu} alt="" />
+      <div className="block lg:hidden ml-[53%]">
+        <img onClick={toggleModal} src={BurgerMenu} alt="" />
       </div>
-      <div className={`ml-[22%] md:flex items-center gap-[30px] hidden`}>
+      {modalMenu && (
+        <div className="fixed inset-0 bg-black opacity-70 z-10"></div>
+      )}
+      {modalMenu && (
+        <>
+          <div className="bg-white z-20 opacity-90 px-[3px] grid grid-cols-1 gap-[3px] text-[20px] fixed top-[10%] h-[49%] w-[94%] rounded-bl-[25px] rounded-br-[25px]">
+            <Link
+              to={"/vacancies"}
+              className="h-[70%] mt-[10px] px-[20px] border rounded-[9px] flex flex-wrap items-center gap-[70%]"
+            >
+              <motion.p whileHover={{ scale: 1.1 }}>Вакансии</motion.p>
+              <img className="bg-gray-600 rounded-[50px]" src={Arrow} alt="" />
+            </Link>
+            <Link
+              to={"/internship"}
+              className="h-[70%] px-[20px] border rounded-[9px] flex flex-wrap items-center gap-[65.2%]"
+            >
+              <motion.p whileHover={{ scale: 1.1 }}>Стажировки</motion.p>
+              <img className="bg-gray-600 rounded-[50px]" src={Arrow} alt="" />
+            </Link>
+            <Link
+              to={"/events"}
+              className="h-[70%] px-[20px] border rounded-[9px] flex flex-wrap items-center gap-[63%]"
+            >
+              <motion.p whileHover={{ scale: 1.1 }}>Мероприятия</motion.p>
+              <img className="bg-gray-600 rounded-[50px]" src={Arrow} alt="" />
+            </Link>
+            <Link
+              to={"/profile"}
+              className="h-[70%] px-[20px] border rounded-[9px] flex flex-wrap items-center gap-[71%]"
+            >
+              <motion.p whileHover={{ scale: 1.1 }}>Профиль</motion.p>
+              <img className="bg-gray-600 rounded-[50px]" src={Arrow} alt="" />
+            </Link>
+            <Link
+              to={"/about-us"}
+              className="h-[70%] px-[20px] border rounded-[9px] flex flex-wrap items-center gap-[77%]"
+            >
+              <motion.p whileHover={{ scale: 1.1 }}>О нас</motion.p>
+              <img className="bg-gray-600 rounded-[50px]" src={Arrow} alt="" />
+            </Link>
+            {isAdmin && (
+              <Link
+                to={"/admin-panel"}
+                className="h-[70%] px-[20px] border rounded-[9px] flex flex-wrap items-center gap-[70%]"
+              >
+                <motion.p whileHover={{ scale: 1.1 }}>Админ Панель</motion.p>
+                <img className="bg-gray-600 rounded-[50px]" src={Arrow} alt="" />
+              </Link>
+            )}
+          </div>
+        </>
+      )}
+      <div className={`ml-[22%] lg:flex items-center gap-[30px] hidden`}>
         <Link to={"/vacancies"}>
           <motion.p whileHover={{ scale: 1.1 }}>Вакансии</motion.p>
         </Link>
@@ -76,6 +138,11 @@ const Header = () => {
         <Link to={"/about-us"}>
           <motion.p whileHover={{ scale: 1.1 }}>О нас</motion.p>
         </Link>
+        {isAdmin && (
+          <Link to={"/admin-panel"}>
+            <motion.p whileHover={{ scale: 1.1 }}>Админ Панель</motion.p>
+          </Link>
+        )}
       </div>
       <div className="ml-auto flex justify-center items-center gap-2">
         <motion.img

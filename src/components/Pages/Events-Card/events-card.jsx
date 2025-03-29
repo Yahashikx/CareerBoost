@@ -62,12 +62,12 @@ const EventsCard = () => {
               <div className="relative bottom-[300px]  ">
                 <p className=" text-[28px] text-white">{item?.time}</p>
               </div>
-              <div className="relative bottom-[50px]">
+              <div className="relative bottom-[130px] lg:bottom-[50px]">
               <p className="text-[26px] font-semibold text-white">
                 {item?.name}
               </p>
               </div>
-              <div className="relative bottom-[40px] flex flex-wrap gap-[30px]">
+              <div className="relative bottom-[120px] lg:bottom-[40px] flex flex-wrap gap-[30px]">
                 <div>
                   <p className="text-[20px] text-white">Организатор:</p>
                   <p className="text-[20px] text-white">{item?.organizer}</p>

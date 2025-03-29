@@ -10,7 +10,7 @@ import {
 import { auth, db } from "../../utils/firebase/firebase-config";
 import { collection, doc, setDoc, getDoc, updateDoc } from "firebase/firestore";
 
-export const userCollectionRef = collection(db, "employer");
+export const userCollectionRef = collection(db, "users");
 
 export const useAuth = create((set) => ({
   isFetch: false,

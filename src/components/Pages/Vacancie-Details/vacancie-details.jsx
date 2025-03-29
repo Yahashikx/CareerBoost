@@ -16,7 +16,7 @@ const CompanieDetails = () =>  {
   const { companie, getAllCompanies, addToWork, isFetch } = useCompanies();
   const [modalMenu, setModalMenu] = useState(false);
   const [coordinates, setCoordinates] = useState([51.505, -0.09]);
-  const [map, setMap] = useState(null);
+  const [isMapModalOpen, setIsMapModalOpen] = useState(false); // State for map modal visibility
   const company = companie.find((companie) => companie.id === id);
 
   useEffect(() => {
@@ -30,30 +30,16 @@ const CompanieDetails = () =>  {
   }, [company]);
 
   useEffect(() => {
-    const initialMap = L.map("map").setView(coordinates, 13);
-    L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(
-      initialMap
-    );
-    setMap(initialMap);
+    if (isMapModalOpen && company && coordinates.length > 0) {
+      const initialMap = L.map("map").setView(coordinates, 13);
+      L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png").addTo(initialMap);
 
-    return () => initialMap.remove();
-  }, []);
-
-  useEffect(() => {
-    if (map && coordinates.length > 0) {
-      map.eachLayer((layer) => {
-        if (layer instanceof L.Marker) map.removeLayer(layer);
-      });
-      map.setView(coordinates, 13);
-      const marker = L.marker(coordinates).addTo(map);
+      const marker = L.marker(coordinates).addTo(initialMap);
       marker.bindPopup(`${company.name}<br />${company.location}`).openPopup();
+
+      return () => initialMap.remove();
     }
-  }, [coordinates, company, map]);
-
-  if (isFetch) return <h1>Загрузка...</h1>;
-  if (!company) return <h1>Компания не найдена</h1>;
-
-  const onHandleRepost = () => company && addToWork(company);
+  }, [isMapModalOpen, company, coordinates]);
 
   const getCoordinatesByAddress = async (address) => {
     const url = `https://nominatim.openstreetmap.org/search?format=json&q=${address}`;
@@ -67,6 +53,11 @@ const CompanieDetails = () =>  {
     }
     return [51.505, -0.09];
   };
+
+  const onHandleRepost = () => company && addToWork(company);
+
+  if (isFetch) return <h1>Загрузка...</h1>;
+  if (!company) return <h1>Компания не найдена</h1>;
 
   return (
     <>
@@ -95,7 +86,7 @@ const CompanieDetails = () =>  {
             {company.time}
           </p>
         </div>
-        <div className="flex items-center ml-[500px] gap-[10px]">
+        <div className="flex items-center ml-[300px] gap-[10px]">
           <button
             onClick={onHandleRepost}
             className="bg-blue-100 p-[10px] rounded-[6px]"
@@ -113,13 +104,32 @@ const CompanieDetails = () =>  {
             Подать заявку
             <img src={ArrowIcon} alt="Arrow" />
           </button>
+          <button
+            onClick={() => setIsMapModalOpen(true)} // Open map modal
+            className="bg-green-600 text-white py-[8px] px-[40px] flex flex-wrap gap-[10px]"
+          >
+            Узнать местоположение
+            <img src={ArrowIcon} alt="Arrow" />
+          </button>
         </div>
       </div>
-      <div
-        className="mt-5"
-        id="map"
-        style={{ height: "300px", width: "100%" }}
-      ></div>
+      
+    {isMapModalOpen && (
+            <div className="fixed inset-0 bg-black opacity-70 z-10"></div>
+          )}
+    
+          {isMapModalOpen && (
+            <div className="fixed left-[30%] top-[30%] w-[40%] h-[51%] rounded-[9px] px-[20px] bg-white shadow-md z-20 opacity-90 modal">
+              <button
+                onClick={() => setIsMapModalOpen(false)} // Close map modal
+                className="fixed top-[5%] right-[5%] rounded-full py-[10px] px-[10px] bg-blue-100"
+              >
+                <img src={CloseIcon} alt="Close" />
+              </button>
+              <div id="map" style={{ height: "100%", width: "100%" }}></div>
+            </div>
+          )}
+
       <div className="border-blue-400 border-[1px] w-[400px] h-[270px] absolute left-[990px]">
         <div className="mt-[20px] ml-[20px]">
           <p className="text-[18px]">Обзор вакансии</p>
@@ -148,6 +158,7 @@ const CompanieDetails = () =>  {
         </div>
       </div>
 
+      {/* Job description */}
       <div className="ml-[30px] mt-[30px] w-[50%]">
         <p className="text-[20px]">Описание:</p>
         <p>{company.description}</p>
@@ -161,6 +172,8 @@ const CompanieDetails = () =>  {
             )}
         </ul>
       </div>
+
+      {/* Modal for application */}
       {modalMenu && (
         <div className="fixed inset-0 bg-black opacity-70 z-10"></div>
       )}
@@ -205,6 +218,6 @@ const CompanieDetails = () =>  {
       )}
     </>
   );
-}
+};
 
 export default CompanieDetails;

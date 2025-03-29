@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { Link, useNavigate } from "react-router-dom";
-import { useAuth } from "../../store/vacancies-auth-slice/vacancies-auth-slice";
+import { useAuth } from "../../store/internship-auth-slice/internship-auth-slice";
 import { motion } from "framer-motion";
 import Header from "../Header/header";
 

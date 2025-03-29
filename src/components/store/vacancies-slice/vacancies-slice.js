@@ -12,7 +12,7 @@ import { auth, db } from "../../utils/firebase/firebase-config";
 
 export const vacanciesCollectionsRef = collection(db, "vacancies");
 export const useVacancies = create((set) => ({
-  vacancies: [],
+  vacancie: [],
   isFetch: false,
   error: false,
   async getAllVacancies() {
@@ -24,7 +24,7 @@ export const useVacancies = create((set) => ({
         id: doc.id,
         ...doc.data(),
       }));
-      set({ vacancies: vacanciesData });
+      set({ vacancie: vacanciesData });
     } catch (error) {
       console.error(error);
       set({ error: true });

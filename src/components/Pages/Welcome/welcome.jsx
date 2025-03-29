@@ -6,14 +6,15 @@ import Human from "../../../assets/img/human.svg";
 import Create from "../../../assets/img/create.svg";
 import Upload from "../../../assets/img/upload.svg";
 import Search from "../../../assets/img/search.svg";
-import SearchCompanie from "../../../assets/img/search-companie.svg";
-import Location from "../../../assets/img/location.svg";
 import Apply from "../../../assets/img/apply.svg";
 import Arrow from "../../../assets/img/arrow.svg"
 import Footer from "../Footer/footer";
-import CompaniesCard from "../../Pages/Companies-Card/companies-card";
+import VacanciesCard from "../../Pages/Vacancies-Card/vacancies-card";
 import { useCompanies } from "../../store/companies-slice/companies-slice";
+import { Spin, Space } from 'antd';
+import { LoadingOutlined } from '@ant-design/icons';
 
+const loadingIcon = <LoadingOutlined style={{ fontSize: 124 }} spin />;
 const Welcome = () => {
   const [currentPage, setCurrentPage] = useState(1);
   const { companie, isFetch, getAllCompanies } = useCompanies();
@@ -34,39 +35,40 @@ const Welcome = () => {
   for (let i = 1; i <= Math.ceil(companie.length / itemsPerPage); i++) {
     pageNumbers.push(i);
   }
+  if (isFetch) {
+    return(
+           <motion.div
+              className="flex justify-center items-center h-[100vh]"
+              initial={{ opacity: 0 }}
+              animate={{ opacity: 1 }}
+              transition={{ duration: 0.5 }}
+            >
+              <Space size="large">
+                <Spin indicator={loadingIcon} />
+              </Space>
+            </motion.div>
+          );
+  }
   return (
     <>
       <Header />
       <div>
         <motion.div
-          className="relative top-[200px] left-[50px] w-[90%]"
+          className="relative top-[70px] lg:top-[200px] left-[50px] w-[90%]"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1 }}
         >
-          <p className="text-[47px] w-[63%]">
+          <p className="text-[27px] lg:text-[47px] w-[63%]">
             Найдите работу, которая соответствует вашим интересам и навыкам
           </p>
           <p className="text-[gray] w-[33%]">
             Aliquam vitae turpis in diam convallis finibus in at risus. Nullam
             in scelerisque leo, eget sollicitudin velit vestibulum.
           </p>
-          <div className="mt-[2%] flex flex-wrap justify-center gap-11 py-3 shadow-2xl w-[50%]">
-            <div className="flex justify-center items-center">
-              <img src={SearchCompanie} alt="" />
-              <input className="py-3 px-1" type="text" placeholder="Название" />
-            </div>
-            <div className="flex justify-center items-center">
-            <img src={Location} alt="" />
-              <input className="py-3 px-1" type="text" placeholder="Местоположение" />
-            </div>
-            <div className="flex justify-center items-center">
-              <button className="bg-blue-700 py-3 px-[60%] rounded-[4px] text-white">Поиск</button>
-            </div>
-          </div>
         </motion.div>
         <motion.div
-          className="relative left-[990px] bottom-[200px] w-[30%]"
+          className="hidden relative left-[990px] bottom-[100px] w-[30%] lg:block"
           initial={{ opacity: 0, scale: 0.8 }}
           animate={{ opacity: 1, scale: 1 }}
           transition={{ duration: 1 }}
@@ -77,7 +79,7 @@ const Welcome = () => {
 
       <div>
         <motion.div
-          className="bg-[#F1F2F4] h-[450px] w-[100%] mt-[80px]"
+          className=" bg-[#F1F2F4] h-[1250px] w-[100%] mt-[80px] lg:h-[450px] px-[12%]"
           initial={{ opacity: 0 }}
           animate={{ opacity: 1 }}
           transition={{ duration: 1.5, delay: 0.5 }}
@@ -85,7 +87,7 @@ const Welcome = () => {
           <p className="flex justify-center items-center text-[30px] relative top-[50px]">
             Как работает jobpilot
           </p>
-          <div className="grid grid-cols-4 relative top-[90px] gap-[30px]">
+          <div className="grid grid-cols-1 lg:grid-cols-4 relative top-[90px] gap-[30px]">
             <Link to={"/registration"}>
               <motion.div
                 className="relative left-[30px] hover:bg-gray-200 w-[84%] rounded-[18px] p-[10px] flex justify-center items-center"
@@ -139,7 +141,7 @@ const Welcome = () => {
           {isFetch
             ? "Загрузка..."
             : currentCompanies.map((company, index) => (
-                <CompaniesCard
+                <VacanciesCard
                   key={company.id}
                   companies={company}
                   custom={index}
@@ -163,7 +165,7 @@ const Welcome = () => {
         </div>
       </div>
       <div className="flex justify-center items-center gap-[5%] mb-[5%]">
-        <div className="w-[30%] h-auto bg-gray-300 p-[2%] rounded-[14px]">
+        <div className="w-[41%] lg:w-[30%] h-auto bg-gray-300 p-[2%] rounded-[14px]">
           <div>
             <p className="text-[30px]">Стать Кандидатом</p>
           </div>
@@ -181,7 +183,7 @@ const Welcome = () => {
             </button>
           </Link>
         </div>
-        <div className="w-[30%] bg-[#0851A3] p-[2%] rounded-[14px]">
+        <div className="w-[47%] lg:w-[30%] bg-[#0851A3] p-[2%] rounded-[14px]">
           <div>
             <p className="text-[30px] text-white">Стать Работадателем</p>
           </div>

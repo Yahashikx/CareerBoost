@@ -12,7 +12,7 @@ const variants = {
 function CompaniesCard({ companies, custom }) {
   const navigate = useNavigate();
   const navigateCompanie = () => {
-    navigate(`/companie-details/${companies.id}`);
+    navigate(`/vacancie-details/${companies.id}`);
   };
 
   return (

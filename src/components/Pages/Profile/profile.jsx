@@ -48,12 +48,12 @@ function Profile() {
             className="text-white p-[10px] bg-blue-400 rounded-[12px]"
           />
         </div>
-        <div className="mt-[2%] ml-[5%] grid grid-cols-3 gap-x-[10px] gap-y-[50px]">
+        <div className="grid grid-cols-1 mt-[2%] ml-[5%] lg:grid-cols-3 gap-x-[10px] gap-y-[50px]">
           {work && work.length > 0 ? (
             work.map((item, index) => (
               <Link to={`/companie-details/${item.id}`}
                 key={index}
-                className="border-blue-400 border-[3px] w-[80%] p-4 rounded-[15px] shadow-md"
+                className="w-[93%] lg:w-[80%] border-blue-400 border-[3px] p-4 rounded-[15px] shadow-md"
               >
                 <img
                   src={item.images?.[0]}
