@@ -128,9 +128,6 @@ const Header = () => {
         <Link to={"/profile"}>
           <motion.p whileHover={{ scale: 1.1 }}>Профиль</motion.p>
         </Link>
-        <Link to={"/about-us"}>
-          <motion.p whileHover={{ scale: 1.1 }}>О нас</motion.p>
-        </Link>
         {isAdmin && (
           <Link to={"/admin-panel"}>
             <motion.p whileHover={{ scale: 1.1 }}>Админ Панель</motion.p>
