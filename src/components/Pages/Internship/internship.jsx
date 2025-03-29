@@ -35,7 +35,7 @@ export const Internship = () => {
       getAllInternship();
     
     }
-  }, [getAllInternship, intern.length]);
+  }, [getAllInternship,intern.length]);
 
   const filterInternship = intern.filter((interny) => {
     const searchName = interny.name
