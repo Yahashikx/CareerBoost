@@ -103,13 +103,6 @@ const Header = () => {
               <motion.p whileHover={{ scale: 1.1 }}>Профиль</motion.p>
               <img className="bg-gray-600 rounded-[50px]" src={Arrow} alt="" />
             </Link>
-            <Link
-              to={"/about-us"}
-              className="h-[70%] px-[20px] border rounded-[9px] flex flex-wrap items-center gap-[77%]"
-            >
-              <motion.p whileHover={{ scale: 1.1 }}>О нас</motion.p>
-              <img className="bg-gray-600 rounded-[50px]" src={Arrow} alt="" />
-            </Link>
             {isAdmin && (
               <Link
                 to={"/admin-panel"}
